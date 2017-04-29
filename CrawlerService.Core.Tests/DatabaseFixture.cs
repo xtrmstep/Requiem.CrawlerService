@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
-using CrawlerService.Data;
-using CrawlerService.Impl.Data;
+﻿using System.Transactions;
+using CrawlerService.Data.Impl;
 
-namespace CrawlerService.Core.Tests
+namespace CrawlerService.Core
 {
     public class DatabaseFixture
     {
@@ -30,7 +24,7 @@ namespace CrawlerService.Core.Tests
             return new TransactionScope(TransactionScopeOption.RequiresNew, to);
         }
 
-        public ICrawlerDbContext CreateDbContext()
+        internal CrawlerDbContext CreateDbContext()
         {
             return new CrawlerDbContext();
         }

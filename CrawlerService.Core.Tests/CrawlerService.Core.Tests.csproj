@@ -8,7 +8,7 @@
     <ProjectGuid>{7F2BE477-3D32-4F26-AAC0-A87B65F288D5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CrawlerService.Core.Tests</RootNamespace>
+    <RootNamespace>CrawlerService.Core</RootNamespace>
     <AssemblyName>CrawlerService.Core.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -54,8 +54,8 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Moq, Version=4.7.8.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\packages\Moq.4.7.8\lib\net45\Moq.dll</HintPath>
+    <Reference Include="Moq, Version=4.7.9.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.7.9\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -108,9 +108,9 @@
       <Project>{c8026e3b-698c-4011-b4fa-444d80292b18}</Project>
       <Name>CrawlerService.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CrawlerService.Impl\CrawlerService.Impl.csproj">
-      <Project>{a7dbbfcd-dcd9-4f34-b488-6e22740a0f12}</Project>
-      <Name>CrawlerService.Impl</Name>
+    <ProjectReference Include="..\CrawlerService.Data\CrawlerService.Data.csproj">
+      <Project>{6a671f64-8018-4883-aaa5-e922d7054ead}</Project>
+      <Name>CrawlerService.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\CrawlerService\CrawlerService.csproj">
       <Project>{35D7B2C1-DACE-479D-8F77-DB6465C139C5}</Project>

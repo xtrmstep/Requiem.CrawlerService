@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using CrawlerService.Impl.Data;
+using CrawlerService.Data.Impl;
 using CrawlerService.Data.Models;
 using Xunit;
 

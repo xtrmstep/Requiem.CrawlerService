@@ -1,6 +1,5 @@
 ﻿using System.Transactions;
 using CrawlerService.Data;
-using CrawlerService.Impl.Data;
 
 namespace CrawlerService.Impl.Tests
 {

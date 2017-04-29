@@ -12,26 +12,17 @@ namespace CrawlerService.Types.Dataflow
 
         public JobItem Job
         {
-            get
-            {
-                return Item1;
-            }
+            get { return Item1; }
         }
 
         public CrawlRule Rule
         {
-            get
-            {
-                return Item2;
-            }
+            get { return Item2; }
         }
 
         public string Content
         {
-            get
-            {
-                return Item3;
-            }
+            get { return Item3; }
         }
     }
 }

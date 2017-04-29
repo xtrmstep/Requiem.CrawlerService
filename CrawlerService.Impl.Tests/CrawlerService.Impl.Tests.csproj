@@ -112,9 +112,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CrawlerService.Impl\CrawlerService.Impl.csproj">
-      <Project>{a7dbbfcd-dcd9-4f34-b488-6e22740a0f12}</Project>
-      <Name>CrawlerService.Impl</Name>
+    <ProjectReference Include="..\CrawlerService.Data\CrawlerService.Data.csproj">
+      <Project>{6a671f64-8018-4883-aaa5-e922d7054ead}</Project>
+      <Name>CrawlerService.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\CrawlerService\CrawlerService.csproj">
       <Project>{35d7b2c1-dace-479d-8f77-db6465c139c5}</Project>

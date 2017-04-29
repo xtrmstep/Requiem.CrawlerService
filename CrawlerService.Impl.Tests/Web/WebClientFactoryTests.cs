@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using CrawlerService.Data;
-using CrawlerService.Impl.Web;
 using CrawlerService.Types;
 using Moq;
 using Xunit;

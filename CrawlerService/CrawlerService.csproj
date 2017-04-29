@@ -62,34 +62,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Exceptions\DataException.cs" />
-    <Compile Include="Data\Exceptions\JobIsAlreadyRunningException.cs" />
-    <Compile Include="Data\IActivityLogRepository.cs" />
-    <Compile Include="Data\ICrawlerDbContext.cs" />
-    <Compile Include="Data\ICrawlerSettingsRepository.cs" />
-    <Compile Include="Data\IDataRepository.cs" />
-    <Compile Include="Data\IJobRepository.cs" />
-    <Compile Include="Data\IUrlFrontierRepository.cs" />
-    <Compile Include="Data\Models\ActivityMessage.cs" />
-    <Compile Include="Data\Models\ActivityMessageType.cs" />
-    <Compile Include="Data\Models\CrawlRule.cs" />
-    <Compile Include="Data\Models\DataBlock.cs" />
-    <Compile Include="Data\Models\DataBlockType.cs" />
-    <Compile Include="Data\Models\HostSetting.cs" />
-    <Compile Include="Data\Models\JobItem.cs" />
-    <Compile Include="Data\Models\UrlItem.cs" />
+    <Compile Include="DependencyConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types\Dataflow\DownloadedContentData.cs" />
+    <Compile Include="Types\Dataflow\Impl\PipelineRoutines.cs" />
     <Compile Include="Types\Dataflow\IPipeline.cs" />
     <Compile Include="Types\Dataflow\ParsedContentData.cs" />
     <Compile Include="Types\Dataflow\ParsingRulesData.cs" />
-    <Compile Include="Types\ServiceLocator.cs" />
     <Compile Include="Web\ICrawlerWebClient.cs" />
+    <Compile Include="Web\Impl\CrawlerWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Web\Impl\WebClientFactory.cs" />
     <Compile Include="Web\IWebClientFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CrawlerService.Data\CrawlerService.Data.csproj">
+      <Project>{6a671f64-8018-4883-aaa5-e922d7054ead}</Project>
+      <Name>CrawlerService.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
