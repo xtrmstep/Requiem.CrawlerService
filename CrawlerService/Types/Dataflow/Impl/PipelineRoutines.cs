@@ -9,21 +9,21 @@ namespace CrawlerService.Types.Dataflow.Impl
     internal class PipelineRoutines : IPipeline
     {
         private readonly ICrawlerSettingsRepository _crawlerSettingsRepository;
-        private readonly IDataRepository _dataRepository;
+        private readonly IDataBlocksRepository _dataRepository;
         private readonly IWebClientFactory _webClientFactory;
 
-        public PipelineRoutines(IWebClientFactory webClientFactory, ICrawlerSettingsRepository crawlerSettingsRepository, IDataRepository dataRepository)
+        public PipelineRoutines(IWebClientFactory webClientFactory, ICrawlerSettingsRepository crawlerSettingsRepository, IDataBlocksRepository dataRepository)
         {
             _webClientFactory = webClientFactory;
             _crawlerSettingsRepository = crawlerSettingsRepository;
             _dataRepository = dataRepository;
         }
 
-        public DownloadedContentData DownloadContent(JobItem job)
+        public DownloadedContentData DownloadContent(Process job)
         {
             using (var client = _webClientFactory.CreateWebClient())
             {
-                var url = job.Url.Url;
+                var url = job.Domain.Url;
                 var content = client.Download(url);
                 return new DownloadedContentData(job, content);
             }
@@ -47,7 +47,7 @@ namespace CrawlerService.Types.Dataflow.Impl
             }
         }
 
-        public JobItem StoreData(ParsedContentData data)
+        public Process StoreData(ParsedContentData data)
         {
             _dataRepository.StoreData(data.Job, data.BlockType, data.Data);
 

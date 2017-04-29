@@ -5,7 +5,7 @@ namespace CrawlerService.Data.Helpers
 {
     public class UrlItemBuilderTests
     {
-        [Fact(DisplayName = "UrlItemBuilder set Url, EvaliableFromDate")]
+        [Fact(DisplayName = "UrlItemBuilder set Domain, EvaliableFromDate")]
         public void Should_correctly_set_URL_and_EvaliableFromDate()
         {
             const string expectedUrl = "http://sub.host.com?p1=v1";

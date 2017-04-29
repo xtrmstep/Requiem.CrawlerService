@@ -10,7 +10,7 @@ namespace CrawlerService.Types.Dataflow
         /// </summary>
         /// <param name="job"></param>
         /// <returns></returns>
-        DownloadedContentData DownloadContent(JobItem job);
+        DownloadedContentData DownloadContent(Process job);
 
         /// <summary>
         ///     Get parsing rules
@@ -31,6 +31,6 @@ namespace CrawlerService.Types.Dataflow
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        JobItem StoreData(ParsedContentData data);
+        Process StoreData(ParsedContentData data);
     }
 }

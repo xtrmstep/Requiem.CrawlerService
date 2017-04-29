@@ -5,16 +5,16 @@ using CrawlerService.Data.Models;
 
 namespace CrawlerService.Data.Impl
 {
-    internal class JobRepository : IJobRepository
+    internal class ProcessesRepository : IProcessesRepository
     {
         private readonly IActivityLogRepository _logger;
 
-        public JobRepository(IActivityLogRepository logger)
+        public ProcessesRepository(IActivityLogRepository logger)
         {
             _logger = logger;
         }
 
-        public JobItem Start(UrlItem urlItem)
+        public Process Start(DomainName domain)
         {
             var jobCreationDateTime = DateTime.UtcNow;
             try
@@ -22,21 +22,21 @@ namespace CrawlerService.Data.Impl
                 using (var ctx = new CrawlerDbContext())
                 {
                     // make sure there is no running job for the URL
-                    var runningJob = ctx.JobItems.Include(j => j.Url).SingleOrDefault(j => j.Url.Url == urlItem.Url && j.DateFinish.HasValue == false);
+                    var runningJob = ctx.Processes.Include(j => j.Domain).SingleOrDefault(j => j.Domain.Url == domain.Url && j.DateFinish.HasValue == false);
                     if (runningJob != null)
                     {
                         throw new Exception("Job is already running");
                     }
 
                     // refresh URL item with the tracked one to avoid PK duplication
-                    var existingUrl = ctx.UrlItems.SingleOrDefault(u => u.Id == urlItem.Id) ?? urlItem;
-                    var newJob = new JobItem
+                    var existingUrl = ctx.DomainNames.SingleOrDefault(u => u.Id == domain.Id) ?? domain;
+                    var newJob = new Process
                     {
                         Id = Guid.NewGuid(), // todo get rid
                         DateStart = jobCreationDateTime,
-                        Url = existingUrl
+                        Domain = existingUrl
                     };
-                    ctx.JobItems.Add(newJob);
+                    ctx.Processes.Add(newJob);
                     ctx.SaveChanges();
 
                     _logger.JobStarted(newJob);
@@ -45,45 +45,45 @@ namespace CrawlerService.Data.Impl
             }
             catch (Exception err)
             {
-                _logger.LogError(urlItem, err);
+                _logger.LogError(domain, err);
                 throw;
             }
         }
 
-        public void Complete(JobItem jobItem)
+        public void Complete(Process process)
         {
             try
             {
                 using (var ctx = new CrawlerDbContext())
                 {
-                    jobItem = ctx.JobItems
-                        .Include(j => j.Url)
-                        .Single(j => j.Id == jobItem.Id);
+                    process = ctx.Processes
+                        .Include(j => j.Domain)
+                        .Single(j => j.Id == process.Id);
                     var logDate = DateTime.UtcNow;
-                    jobItem.Url.IsInProgress = false;
-                    jobItem.DateFinish = logDate;
-                    _logger.JobCompleted(jobItem);
+                    process.Domain.IsInProgress = false;
+                    process.DateFinish = logDate;
+                    _logger.JobCompleted(process);
                     ctx.SaveChanges();
                 }
             }
             catch (Exception err)
             {
-                _logger.LogError(jobItem, err);
+                _logger.LogError(process, err);
                 throw;
             }
         }
 
-        public void Stop(JobItem jobItem)
+        public void Stop(Process jobItem)
         {
             try
             {
                 using (var ctx = new CrawlerDbContext())
                 {
-                    jobItem = ctx.JobItems
-                        .Include(j => j.Url)
+                    jobItem = ctx.Processes
+                        .Include(j => j.Domain)
                         .Single(j => j.Id == jobItem.Id);
                     var logDate = DateTime.UtcNow;
-                    jobItem.Url.IsInProgress = false;
+                    jobItem.Domain.IsInProgress = false;
                     jobItem.DateFinish = logDate;
                     _logger.JobStopped(jobItem);
                     ctx.SaveChanges();

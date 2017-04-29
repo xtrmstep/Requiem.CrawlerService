@@ -11,12 +11,10 @@ namespace CrawlerService.Data.Impl
         {
         }
 
-        public IDbSet<UrlItem> UrlItems { get; set; }
-        public IDbSet<HostSetting> HostSettings { get; set; }
+        public IDbSet<DomainName> DomainNames { get; set; }
         public IDbSet<DataBlock> DataBlocks { get; set; }
-        public IDbSet<CrawlRule> CrawlRules { get; set; }
-        public IDbSet<JobItem> JobItems { get; set; }
-        public IDbSet<ActivityMessage> ActivityMessages { get; set; }
+        public IDbSet<ExtractRule> ExtractRules { get; set; }
+        public IDbSet<Process> Processes { get; set; }
 
         /// <summary>
         ///     The method inserts to the DB initial values and must be called from Seed() method of the Configuration class
@@ -26,49 +24,35 @@ namespace CrawlerService.Data.Impl
         {
             #region rules
 
-            var linkRule = new CrawlRule
+            var linkRule = new ExtractRule
             {
-                DataType = DataBlockType.Link,
+                Type = Types.DataBlocks.LINK,
                 RegExpression = "(<a.*?>.*?</a>)",
                 Name = "Link"
             };
-            var picRule = new CrawlRule
+            var picRule = new ExtractRule
             {
-                DataType = DataBlockType.Picture,
+                Type = Types.DataBlocks.PICTURE,
                 RegExpression = "<(img)\b[^>]*>",
                 Name = "Picture"
             };
-            var videoRule = new CrawlRule
+            var videoRule = new ExtractRule
             {
-                DataType = DataBlockType.Video,
+                Type = Types.DataBlocks.VIDEO,
                 RegExpression = @"(?<=<iframe[^>]*?)(?:\s*width=[""'](?<width>[^""']+)[""']|\s*height=[""'](?<height>[^'""]+)[""']|\s*src=[""'](?<src>[^'""]+[""']))+[^>]*?>",
                 Name = "Video"
             };
-            ctx.CrawlRules.AddOrUpdate(r => r.Name, linkRule, picRule, videoRule);
-
-            #endregion
-
-            #region settings
-
-            var defaultSettings = new HostSetting
-            {
-                Host = string.Empty,
-                CrawlDelay = 60,
-                Disallow = string.Empty,
-                RobotsTxt = string.Empty
-            };
-            ctx.HostSettings.AddOrUpdate(s => s.Host, defaultSettings);
+            ctx.ExtractRules.AddOrUpdate(r => r.Name, linkRule, picRule, videoRule);
 
             #endregion
 
             #region urls
 
-            var defaultUrl = new UrlItem
+            var defaultUrl = new DomainName
             {
-                Url = "http://binary-notes.ru",
-                Host = "binary-notes.ru"
+                Name = "http://binary-notes.ru"
             };
-            //ctx.UrlItems.AddOrUpdate(s => s.Url, defaultUrl);
+            ctx.DomainNames.AddOrUpdate(s => s.Name, defaultUrl);
 
             #endregion
         }

@@ -37,7 +37,7 @@ namespace CrawlerService.Data.Impl
             using (_db.CreateTransaction())
             {
                 var logger = new ActivityLogRepository();
-                logger.RulesTaken(new JobItem());
+                logger.RulesTaken(new Process());
 
                 using (var ctx = _db.CreateDbContext())
                 {
@@ -53,7 +53,7 @@ namespace CrawlerService.Data.Impl
             using (_db.CreateTransaction())
             {
                 var logger = new ActivityLogRepository();
-                logger.DataStored(new JobItem());
+                logger.DataStored(new Process());
 
                 using (var ctx = _db.CreateDbContext())
                 {
@@ -85,7 +85,7 @@ namespace CrawlerService.Data.Impl
             using (_db.CreateTransaction())
             {
                 var logger = new ActivityLogRepository();
-                logger.LogError(new UrlItem(), new Exception());
+                logger.LogError(new DomainName(), new Exception());
 
                 using (var ctx = _db.CreateDbContext())
                 {
@@ -101,7 +101,7 @@ namespace CrawlerService.Data.Impl
             using (_db.CreateTransaction())
             {
                 var logger = new ActivityLogRepository();
-                logger.LogError(new JobItem(), new Exception());
+                logger.LogError(new Process(), new Exception());
 
                 using (var ctx = _db.CreateDbContext())
                 {
@@ -117,7 +117,7 @@ namespace CrawlerService.Data.Impl
             using (_db.CreateTransaction())
             {
                 var logger = new ActivityLogRepository();
-                logger.SettingsStored(new UrlItem());
+                logger.SettingsStored(new DomainName());
 
                 using (var ctx = _db.CreateDbContext())
                 {
@@ -133,7 +133,7 @@ namespace CrawlerService.Data.Impl
             using (_db.CreateTransaction())
             {
                 var logger = new ActivityLogRepository();
-                logger.SettingsLoaded(new UrlItem());
+                logger.SettingsLoaded(new DomainName());
 
                 using (var ctx = _db.CreateDbContext())
                 {
@@ -149,7 +149,7 @@ namespace CrawlerService.Data.Impl
             using (_db.CreateTransaction())
             {
                 var logger = new ActivityLogRepository();
-                logger.JobStarted(new JobItem());
+                logger.JobStarted(new Process());
 
                 using (var ctx = _db.CreateDbContext())
                 {
@@ -165,7 +165,7 @@ namespace CrawlerService.Data.Impl
             using (_db.CreateTransaction())
             {
                 var logger = new ActivityLogRepository();
-                logger.JobCompleted(new JobItem());
+                logger.JobCompleted(new Process());
 
                 using (var ctx = _db.CreateDbContext())
                 {
@@ -181,7 +181,7 @@ namespace CrawlerService.Data.Impl
             using (_db.CreateTransaction())
             {
                 var logger = new ActivityLogRepository();
-                logger.JobStopped(new JobItem());
+                logger.JobStopped(new Process());
 
                 using (var ctx = _db.CreateDbContext())
                 {

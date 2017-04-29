@@ -5,10 +5,10 @@ namespace CrawlerService.Data.Helpers
 {
     public static class UrlItemBuilder
     {
-        public static UrlItem Create(string url, DateTime nextAvailableTime)
+        public static DomainName Create(string url, DateTime nextAvailableTime)
         {
             var uri = new Uri(url);
-            var urlItem = new UrlItem
+            var urlItem = new DomainName
             {
                 Url = url,
                 Host = uri.Host,

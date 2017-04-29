@@ -25,16 +25,16 @@ namespace CrawlerService.Data.Impl
 
             using (_db.CreateTransaction())
             {
-                var frontier = new UrlFrontierRepository();
+                var frontier = new DomainNamesRepository();
                 var nextAvailableTime = new DateTime(2016, 1, 1, 0, 0, 0, DateTimeKind.Utc); // already available
                 frontier.AddOrUpdateUrl(expectedUrl, nextAvailableTime);
                 var urlItem = frontier.GetAvailableUrls(1, DateTime.UtcNow).First(); // should return one item
 
-                var jobs = new JobRepository(Mock.Of<IActivityLogRepository>());
+                var jobs = new ProcessesRepository(Mock.Of<IActivityLogRepository>());
                 var jobItem = jobs.Start(urlItem);
 
                 // add a data block by means of the repository
-                var dataRep = new DataRepository(Mock.Of<IActivityLogRepository>());
+                var dataRep = new DataBlocksRepository(Mock.Of<IActivityLogRepository>());
 
                 var blockId = dataRep.StoreData(jobItem, DataBlockType.Link, expectedDataLink);
 

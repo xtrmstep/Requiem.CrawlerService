@@ -9,11 +9,11 @@ namespace CrawlerService.Core
 {
     public class Runner
     {
-        private readonly IJobRepository _jobs;
+        private readonly IProcessesRepository _jobs;
         private readonly IPipeline _pipeline;
-        private readonly IUrlFrontierRepository _urlFrontier;
+        private readonly IDomainNamesRepository _urlFrontier;
 
-        public Runner(IUrlFrontierRepository urlFrontierRepository, IJobRepository jobRepository, IPipeline pipeline)
+        public Runner(IDomainNamesRepository urlFrontierRepository, IProcessesRepository jobRepository, IPipeline pipeline)
         {
             _urlFrontier = urlFrontierRepository;
             _pipeline = pipeline;
@@ -36,14 +36,14 @@ namespace CrawlerService.Core
         {
             #region dataflow blocks
 
-            var downloadUrl = new TransformBlock<JobItem, DownloadedContentData>(job => _pipeline.DownloadContent(job), new ExecutionDataflowBlockOptions
+            var downloadUrl = new TransformBlock<Process, DownloadedContentData>(job => _pipeline.DownloadContent(job), new ExecutionDataflowBlockOptions
             {
                 MaxDegreeOfParallelism = MaxThreadsNumber
             });
             var getRules = new TransformManyBlock<DownloadedContentData, ParsingRulesData>(data => _pipeline.GetParsingRules(data));
             var parseContent = new TransformManyBlock<ParsingRulesData, ParsedContentData>(data => _pipeline.ParseContent(data));
-            var storeData = new TransformBlock<ParsedContentData, JobItem>(data => _pipeline.StoreData(data));
-            var sinkBlock = new ActionBlock<JobItem>(job => { });
+            var storeData = new TransformBlock<ParsedContentData, Process>(data => _pipeline.StoreData(data));
+            var sinkBlock = new ActionBlock<Process>(job => { });
 
             #endregion
 
@@ -57,7 +57,7 @@ namespace CrawlerService.Core
             #endregion
 
             // obtain a bunch of URLs and start processing in parallel (as per configuration)
-            var startedJobs = new List<JobItem>();
+            var startedJobs = new List<Process>();
             var urlItems = _urlFrontier.GetAvailableUrls(BatchSize, DateTime.UtcNow);
             foreach (var urlItem in urlItems)
             {

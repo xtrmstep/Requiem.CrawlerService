@@ -3,14 +3,14 @@ using CrawlerService.Data.Models;
 
 namespace CrawlerService.Types.Dataflow
 {
-    public class ParsedContentData : Tuple<JobItem, DataBlockType, string>
+    public class ParsedContentData : Tuple<Process, DataBlockType, string>
     {
-        public ParsedContentData(JobItem job, DataBlockType blockType, string data)
+        public ParsedContentData(Process job, DataBlockType blockType, string data)
             : base(job, blockType, data)
         {
         }
 
-        public JobItem Job
+        public Process Job
         {
             get { return Item1; }
         }

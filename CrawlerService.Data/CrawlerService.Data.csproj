@@ -55,26 +55,20 @@
   <ItemGroup>
     <Compile Include="DependencyConfiguration.cs" />
     <Compile Include="Helpers\UrlItemBuilder.cs" />
-    <Compile Include="IActivityLogRepository.cs" />
-    <Compile Include="ICrawlerSettingsRepository.cs" />
-    <Compile Include="IDataRepository.cs" />
-    <Compile Include="IJobRepository.cs" />
-    <Compile Include="Impl\ActivityLogRepository.cs" />
+    <Compile Include="IDataBlocksRepository.cs" />
+    <Compile Include="IProcessesRepository.cs" />
     <Compile Include="Impl\CrawlerDbContext.cs" />
-    <Compile Include="Impl\CrawlerSettingsRepository.cs" />
-    <Compile Include="Impl\DataRepository.cs" />
-    <Compile Include="Impl\JobRepository.cs" />
-    <Compile Include="Impl\UrlFrontierRepository.cs" />
-    <Compile Include="IUrlFrontierRepository.cs" />
-    <Compile Include="Models\ActivityMessage.cs" />
-    <Compile Include="Models\ActivityMessageType.cs" />
-    <Compile Include="Models\CrawlRule.cs" />
+    <Compile Include="Impl\DataBlocksRepository.cs" />
+    <Compile Include="Impl\ProcessesRepository.cs" />
+    <Compile Include="Impl\DomainNamesRepository.cs" />
+    <Compile Include="IDomainNamesRepository.cs" />
+    <Compile Include="Models\ExtractRule.cs" />
     <Compile Include="Models\DataBlock.cs" />
-    <Compile Include="Models\DataBlockType.cs" />
-    <Compile Include="Models\HostSetting.cs" />
-    <Compile Include="Models\JobItem.cs" />
-    <Compile Include="Models\UrlItem.cs" />
+    <Compile Include="Types\DataBlockType.cs" />
+    <Compile Include="Models\Process.cs" />
+    <Compile Include="Models\DomainName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Types\Statuses.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

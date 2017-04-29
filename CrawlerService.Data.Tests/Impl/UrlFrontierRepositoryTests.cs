@@ -24,7 +24,7 @@ namespace CrawlerService.Data.Impl
             var expectedDate1 = new DateTime(2016, 1, 1);
             var expectedDate2 = new DateTime(2016, 1, 2);
             var asOfDate = new DateTime(2016, 1, 3);
-            var urlRep = new UrlFrontierRepository();
+            var urlRep = new DomainNamesRepository();
 
             using (_db.CreateTransaction())
             {
@@ -49,7 +49,7 @@ namespace CrawlerService.Data.Impl
             const string url2 = "http://sub.domain.com?p1=v2";
             var expectedDate = new DateTime(2016, 1, 1);
             var asOfDate = new DateTime(2016, 1, 3);
-            var urlRep = new UrlFrontierRepository();
+            var urlRep = new DomainNamesRepository();
 
             using (_db.CreateTransaction())
             {
@@ -78,7 +78,7 @@ namespace CrawlerService.Data.Impl
 
             using (_db.CreateTransaction())
             {
-                var urlRep = new UrlFrontierRepository();
+                var urlRep = new DomainNamesRepository();
                 urlRep.AddOrUpdateUrl(url1, expectedDate1);
                 urlRep.AddOrUpdateUrl(url2, expectedDate2);
 
@@ -99,13 +99,13 @@ namespace CrawlerService.Data.Impl
             const string host = "sub.domain.com";
             var expectedDate = new DateTime(2016, 1, 1);
 
-            var urlRep = new UrlFrontierRepository();
+            var urlRep = new DomainNamesRepository();
             using (_db.CreateTransaction())
             {
                 urlRep.AddOrUpdateUrl(url, expectedDate);
                 using (var ctx = _db.CreateDbContext())
                 {
-                    var dbUrlItem = ctx.UrlItems.SingleOrDefault(u => u.Url == url);
+                    var dbUrlItem = ctx.DomainNames.SingleOrDefault(u => u.Url == url);
 
                     Assert.NotNull(dbUrlItem);
                     Assert.Equal(url, dbUrlItem.Url);
@@ -121,14 +121,14 @@ namespace CrawlerService.Data.Impl
             var expectedDate1 = new DateTime(2016, 1, 1);
             var expectedDate2 = new DateTime(2016, 1, 2);
 
-            var urlRep = new UrlFrontierRepository();
+            var urlRep = new DomainNamesRepository();
             using (_db.CreateTransaction())
             {
                 urlRep.AddOrUpdateUrl(url, expectedDate1);
                 urlRep.AddOrUpdateUrl(url, expectedDate2);
                 using (var ctx = _db.CreateDbContext())
                 {
-                    var dbUrlItem = ctx.UrlItems.SingleOrDefault(u => u.Url == url);
+                    var dbUrlItem = ctx.DomainNames.SingleOrDefault(u => u.Url == url);
 
                     Assert.NotNull(dbUrlItem);
                     Assert.Equal(url, dbUrlItem.Url);
@@ -143,14 +143,14 @@ namespace CrawlerService.Data.Impl
             const string url = "http://sub.domain.com?p1=v1&p2=v2";
             var expectedDate1 = new DateTime(2016, 1, 1);
 
-            var urlRep = new UrlFrontierRepository();
+            var urlRep = new DomainNamesRepository();
             using (_db.CreateTransaction())
             {
                 urlRep.AddOrUpdateUrl(url, expectedDate1);
                 urlRep.AddOrUpdateUrl(url, expectedDate1);
                 using (var ctx = _db.CreateDbContext())
                 {
-                    var actualRecords = ctx.UrlItems.Count(u => u.Url == url);
+                    var actualRecords = ctx.DomainNames.Count(u => u.Url == url);
                     Assert.Equal(1, actualRecords);
                 }
             }

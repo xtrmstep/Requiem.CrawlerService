@@ -3,13 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CrawlerService.Data.Models
 {
-    public class DataBlock
+    public class Process
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public string Url { get; set; }
-        public string Type { get; set; }
-        public string Data { get; set; }
-        public DateTime ExtractedDate { get; set; }
+        public DomainName Domain { get; set; }
+        public string Status { get; set; }
+        public DateTime DateStart { get; set; }
+        public DateTime? DateFinish { get; set; }
     }
 }

@@ -7,13 +7,15 @@ using CrawlerService.Data.Models;
 
 namespace CrawlerService.Data.Impl
 {
-    internal class UrlFrontierRepository : IUrlFrontierRepository
+    internal class DomainNamesRepository : IDomainNamesRepository
     {
-        public IEnumerable<UrlItem> GetAvailableUrls(int number, DateTime asOfDate)
+        public DomainName GetNextDomain(DateTime asOfDate)
         {
             using (var ctx = new CrawlerDbContext())
             {
-                var urls = ctx.UrlItems
+                var 
+
+                var urls = ctx.DomainNames
                     // note: diff in microseconds causes overflow in DB, that's why diff in seconds is used
                     .Where(url => !url.IsInProgress && (url.EvaliableFromDate.HasValue == false || DbFunctions.DiffSeconds(url.EvaliableFromDate, asOfDate) > 0))
                     .OrderBy(url => url.EvaliableFromDate)
@@ -35,7 +37,7 @@ namespace CrawlerService.Data.Impl
             using (var ctx = new CrawlerDbContext())
             {
                 var urlItem = UrlItemBuilder.Create(url, nextAvailableTime);
-                var existingUrl = ctx.UrlItems.SingleOrDefault(u => u.Host == urlItem.Host && u.Url == url);
+                var existingUrl = ctx.DomainNames.SingleOrDefault(u => u.Host == urlItem.Host && u.Url == url);
                 if (existingUrl != null)
                 {
                     existingUrl.EvaliableFromDate = nextAvailableTime;
@@ -43,7 +45,7 @@ namespace CrawlerService.Data.Impl
                 }
                 else
                 {
-                    ctx.UrlItems.Add(urlItem);
+                    ctx.DomainNames.Add(urlItem);
                 }
                 ctx.SaveChanges();
             }

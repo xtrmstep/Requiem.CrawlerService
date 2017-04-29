@@ -3,19 +3,19 @@ using CrawlerService.Data.Models;
 
 namespace CrawlerService.Types.Dataflow
 {
-    public class ParsingRulesData : Tuple<JobItem, CrawlRule, string>
+    public class ParsingRulesData : Tuple<Process, ExtractRule, string>
     {
-        public ParsingRulesData(JobItem job, CrawlRule rule, string content)
+        public ParsingRulesData(Process job, ExtractRule rule, string content)
             : base(job, rule, content)
         {
         }
 
-        public JobItem Job
+        public Process Job
         {
             get { return Item1; }
         }
 
-        public CrawlRule Rule
+        public ExtractRule Rule
         {
             get { return Item2; }
         }

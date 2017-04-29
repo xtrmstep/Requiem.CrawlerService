@@ -51,7 +51,7 @@ namespace CrawlerService.Data.Impl
 
                 #region get settings for host
 
-                var urlItem = new UrlItem
+                var urlItem = new DomainName
                 {
                     Url = testUrl, Host = testHost
                 };
@@ -86,7 +86,7 @@ namespace CrawlerService.Data.Impl
 
             #region get settings for host
 
-            var urlItem = new UrlItem
+            var urlItem = new DomainName
             {
                 Url = testUrl, Host = testHost
             };
@@ -120,7 +120,7 @@ namespace CrawlerService.Data.Impl
 
                 #region get settings for host
 
-                var urlItem = new UrlItem
+                var urlItem = new DomainName
                 {
                     Url = testUrl,
                     Host = testHost

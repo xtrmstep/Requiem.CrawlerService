@@ -12,8 +12,8 @@ namespace CrawlerService.Core
         [Fact(DisplayName = "Should call pipeline methods")]
         public void Should_call_pipeline_methods()
         {
-            var urlFrontierRepository = Mock.Of<IUrlFrontierRepository>();
-            var jobRepository = Mock.Of<IJobRepository>();
+            var urlFrontierRepository = Mock.Of<IDomainNamesRepository>();
+            var jobRepository = Mock.Of<IProcessesRepository>();
             var pipeline = Mock.Of<IPipeline>();
             var runner = new Runner(urlFrontierRepository, jobRepository, pipeline);
 
@@ -21,9 +21,9 @@ namespace CrawlerService.Core
 
             #region mock returns
 
-            var jobItem = new JobItem();
+            var jobItem = new Process();
             var downloadedContentData = new DownloadedContentData(jobItem, string.Empty);
-            var crawlRule = new CrawlRule();
+            var crawlRule = new ExtractRule();
             var parsingRulesDatas = new[]
             {
                 new ParsingRulesData(jobItem, crawlRule, string.Empty)
@@ -38,7 +38,7 @@ namespace CrawlerService.Core
             };
             var urlItems = new[]
             {
-                new UrlItem()
+                new DomainName()
             };
 
             #endregion
@@ -46,7 +46,7 @@ namespace CrawlerService.Core
             #region pipeline mock
 
             var mockPipeline = new Mock<IPipeline>();
-            mockPipeline.Setup(m => m.DownloadContent(It.IsAny<JobItem>())).Returns(downloadedContentData);
+            mockPipeline.Setup(m => m.DownloadContent(It.IsAny<Process>())).Returns(downloadedContentData);
             mockPipeline.Setup(m => m.GetParsingRules(It.IsAny<DownloadedContentData>())).Returns(parsingRulesDatas);
             mockPipeline.Setup(m => m.ParseContent(It.IsAny<ParsingRulesData>())).Returns(parsedContentDatas);
             mockPipeline.Setup(m => m.StoreData(It.IsAny<ParsedContentData>())).Returns(jobItem);
@@ -56,7 +56,7 @@ namespace CrawlerService.Core
             #region frontier mock
 
             // at least one URL should be exist to allow the downloading of content
-            var mockFrontier = new Mock<IUrlFrontierRepository>();
+            var mockFrontier = new Mock<IDomainNamesRepository>();
             mockFrontier.Setup(m => m.GetAvailableUrls(It.IsAny<int>(), It.IsAny<DateTime>())).Returns(urlItems);
 
             #endregion
@@ -64,8 +64,8 @@ namespace CrawlerService.Core
             #region jobs mock
 
             // job should be created for the URL
-            var mockJob = new Mock<IJobRepository>();
-            mockJob.Setup(m => m.Start(It.IsAny<UrlItem>())).Returns(jobItem);
+            var mockJob = new Mock<IProcessesRepository>();
+            mockJob.Setup(m => m.Start(It.IsAny<DomainName>())).Returns(jobItem);
 
             #endregion
 
@@ -73,7 +73,7 @@ namespace CrawlerService.Core
 
             // at least one rule should be exist to allow the downloading of content
             var mockSettings = new Mock<ICrawlerSettingsRepository>();
-            mockSettings.Setup(m => m.GetParsingRules(It.IsAny<JobItem>())).Returns(crawlRules);
+            mockSettings.Setup(m => m.GetParsingRules(It.IsAny<Process>())).Returns(crawlRules);
 
             #endregion
 
@@ -81,7 +81,7 @@ namespace CrawlerService.Core
 
             runner.Run();
 
-            mockPipeline.Verify(m => m.DownloadContent(It.IsAny<JobItem>()), Times.Once);
+            mockPipeline.Verify(m => m.DownloadContent(It.IsAny<Process>()), Times.Once);
             mockPipeline.Verify(m => m.GetParsingRules(It.IsAny<DownloadedContentData>()), Times.Once);
             mockPipeline.Verify(m => m.ParseContent(It.IsAny<ParsingRulesData>()), Times.Once);
             mockPipeline.Verify(m => m.StoreData(It.IsAny<ParsedContentData>()), Times.Once);

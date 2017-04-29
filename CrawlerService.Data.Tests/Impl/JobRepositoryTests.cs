@@ -28,12 +28,12 @@ namespace CrawlerService.Data.Impl
             {
                 #region action
 
-                var urlItem = new UrlItem
+                var urlItem = new DomainName
                 {
                     Url = testUrl,
                     Host = testHost
                 };
-                var jobRep = new JobRepository(Mock.Of<IActivityLogRepository>());
+                var jobRep = new ProcessesRepository(Mock.Of<IActivityLogRepository>());
                 var job = jobRep.Start(urlItem);
 
                 #endregion
@@ -44,10 +44,10 @@ namespace CrawlerService.Data.Impl
                 using (var ctx = _db.CreateDbContext())
                 {
                     // try to find unfinished job for the url
-                    var actualJob = ctx.JobItems.Include(j => j.Url).SingleOrDefault(j => j.DateFinish.HasValue == false);
+                    var actualJob = ctx.Processes.Include(j => j.Domain).SingleOrDefault(j => j.DateFinish.HasValue == false);
                     Assert.NotNull(actualJob);
                     Assert.Equal(job.Id, actualJob.Id);
-                    Assert.Equal(testUrl, actualJob.Url.Url);
+                    Assert.Equal(testUrl, actualJob.Domain.Url);
                     Assert.False(actualJob.DateFinish.HasValue);
                 }
 
@@ -63,7 +63,7 @@ namespace CrawlerService.Data.Impl
 
             using (_db.CreateTransaction())
             {
-                var urlItem = new UrlItem
+                var urlItem = new DomainName
                 {
                     Url = testUrl,
                     Host = testHost
@@ -72,19 +72,19 @@ namespace CrawlerService.Data.Impl
                 // add finished job
                 using (var ctx = _db.CreateDbContext())
                 {
-                    ctx.JobItems.Add(new JobItem
+                    ctx.Processes.Add(new Process
                     {
                         Id = Guid.NewGuid(),
                         DateStart = DateTime.Now.AddDays(-2),
                         DateFinish = DateTime.Now.AddDays(-2), // make sure the job is finished
-                        Url = urlItem
+                        Domain = urlItem
                     });
                     ctx.SaveChanges();
                 }
 
                 #region action
 
-                var jobRep = new JobRepository(Mock.Of<IActivityLogRepository>());
+                var jobRep = new ProcessesRepository(Mock.Of<IActivityLogRepository>());
                 var job = jobRep.Start(urlItem);
 
                 #endregion
@@ -95,10 +95,10 @@ namespace CrawlerService.Data.Impl
                 using (var ctx = _db.CreateDbContext())
                 {
                     // try to find unfinished job for the url
-                    var actualJob = ctx.JobItems.Include(j => j.Url).SingleOrDefault(j => j.DateFinish.HasValue == false);
+                    var actualJob = ctx.Processes.Include(j => j.Domain).SingleOrDefault(j => j.DateFinish.HasValue == false);
                     Assert.NotNull(actualJob);
                     Assert.Equal(job.Id, actualJob.Id);
-                    Assert.Equal(testUrl, actualJob.Url.Url);
+                    Assert.Equal(testUrl, actualJob.Domain.Url);
                     Assert.False(actualJob.DateFinish.HasValue);
                 }
 
@@ -114,7 +114,7 @@ namespace CrawlerService.Data.Impl
 
             using (_db.CreateTransaction())
             {
-                var urlItem = new UrlItem
+                var urlItem = new DomainName
                 {
                     Url = testUrl,
                     Host = testHost
@@ -123,17 +123,17 @@ namespace CrawlerService.Data.Impl
                 // add not finished job
                 using (var ctx = _db.CreateDbContext())
                 {
-                    ctx.JobItems.Add(new JobItem
+                    ctx.Processes.Add(new Process
                     {
                         Id = Guid.NewGuid(),
                         DateStart = DateTime.Now.AddDays(-2),
                         DateFinish = null, // make sure the job is NOT finished
-                        Url = urlItem
+                        Domain = urlItem
                     });
                     ctx.SaveChanges();
                 }
 
-                var jobRep = new JobRepository(Mock.Of<IActivityLogRepository>());
+                var jobRep = new ProcessesRepository(Mock.Of<IActivityLogRepository>());
                 Assert.Throws<Exception>(() => jobRep.Start(urlItem));
             }
         }
@@ -150,19 +150,19 @@ namespace CrawlerService.Data.Impl
             {
                 #region action
 
-                var urlItem = new UrlItem
+                var urlItem = new DomainName
                 {
                     Url = testUrl,
                     Host = testHost
                 };
-                var jobRep = new JobRepository(mockLogger.Object);
+                var jobRep = new ProcessesRepository(mockLogger.Object);
                 jobRep.Start(urlItem);
 
                 #endregion
 
                 #region assertion
 
-                mockLogger.Verify(m => m.JobStarted(It.IsAny<JobItem>()), Times.Once);
+                mockLogger.Verify(m => m.JobStarted(It.IsAny<Process>()), Times.Once);
 
                 #endregion
             }
@@ -180,13 +180,13 @@ namespace CrawlerService.Data.Impl
             {
                 #region action
 
-                var urlItem = new UrlItem
+                var urlItem = new DomainName
                 {
                     Url = testUrl,
                     Host = testHost
                 };
 
-                var jobRep = new JobRepository(mockLogger.Object);
+                var jobRep = new ProcessesRepository(mockLogger.Object);
                 var job = jobRep.Start(urlItem); // adds the 1st log message
                 // wait a little bit to force difference in time between two log messages and sort them later
                 Thread.Sleep(100);
@@ -196,8 +196,8 @@ namespace CrawlerService.Data.Impl
 
                 #region assertion
 
-                mockLogger.Verify(m => m.JobStarted(It.IsAny<JobItem>()), Times.Once);
-                mockLogger.Verify(m => m.JobCompleted(It.IsAny<JobItem>()), Times.Once);
+                mockLogger.Verify(m => m.JobStarted(It.IsAny<Process>()), Times.Once);
+                mockLogger.Verify(m => m.JobCompleted(It.IsAny<Process>()), Times.Once);
 
                 #endregion
             }
@@ -213,12 +213,12 @@ namespace CrawlerService.Data.Impl
             {
                 #region action
 
-                var urlItem = new UrlItem
+                var urlItem = new DomainName
                 {
                     Url = testUrl,
                     Host = testHost
                 };
-                var jobRep = new JobRepository(Mock.Of<IActivityLogRepository>());
+                var jobRep = new ProcessesRepository(Mock.Of<IActivityLogRepository>());
                 var job = jobRep.Start(urlItem); // adds the 1st log message
                 // wait a little bit to force difference in time between two log messages and sort them later
                 Thread.Sleep(100);
@@ -231,7 +231,7 @@ namespace CrawlerService.Data.Impl
                 // make sure the job is created in DB
                 using (var ctx = _db.CreateDbContext())
                 {
-                    var finishedJob = ctx.JobItems.Single(j => j.Id == job.Id);
+                    var finishedJob = ctx.Processes.Single(j => j.Id == job.Id);
                     Assert.True(finishedJob.DateFinish.HasValue);
                 }
 
@@ -251,12 +251,12 @@ namespace CrawlerService.Data.Impl
             {
                 #region action
 
-                var urlItem = new UrlItem
+                var urlItem = new DomainName
                 {
                     Url = testUrl,
                     Host = testHost
                 };
-                var jobRep = new JobRepository(mockLogger.Object);
+                var jobRep = new ProcessesRepository(mockLogger.Object);
                 var job = jobRep.Start(urlItem); // adds the 1st log message
                 // wait a little bit to force difference in time between two log messages and sort them later
                 Thread.Sleep(100);
@@ -266,8 +266,8 @@ namespace CrawlerService.Data.Impl
 
                 #region assertion
 
-                mockLogger.Verify(m => m.JobStarted(It.IsAny<JobItem>()), Times.Once);
-                mockLogger.Verify(m => m.JobStopped(It.IsAny<JobItem>()), Times.Once);
+                mockLogger.Verify(m => m.JobStarted(It.IsAny<Process>()), Times.Once);
+                mockLogger.Verify(m => m.JobStopped(It.IsAny<Process>()), Times.Once);
 
                 #endregion
             }
@@ -283,12 +283,12 @@ namespace CrawlerService.Data.Impl
             {
                 #region action
 
-                var urlItem = new UrlItem
+                var urlItem = new DomainName
                 {
                     Url = testUrl,
                     Host = testHost
                 };
-                var jobRep = new JobRepository(Mock.Of<IActivityLogRepository>());
+                var jobRep = new ProcessesRepository(Mock.Of<IActivityLogRepository>());
                 var job = jobRep.Start(urlItem); // adds the 1st log message
                 // wait a little bit to force difference in time between two log messages and sort them later
                 Thread.Sleep(100);
@@ -301,7 +301,7 @@ namespace CrawlerService.Data.Impl
                 // make sure the job is created in DB
                 using (var ctx = _db.CreateDbContext())
                 {
-                    var finishedJob = ctx.JobItems.Single(j => j.Id == job.Id);
+                    var finishedJob = ctx.Processes.Single(j => j.Id == job.Id);
                     Assert.True(finishedJob.DateFinish.HasValue);
                 }
 
@@ -318,12 +318,12 @@ namespace CrawlerService.Data.Impl
             {
                 #region action
 
-                var frontier = new UrlFrontierRepository();
+                var frontier = new DomainNamesRepository();
                 var nextAvailableTime = new DateTime(2016, 1, 1, 0, 0, 0, DateTimeKind.Utc); // already available
                 frontier.AddOrUpdateUrl(testUrl, nextAvailableTime);
                 var urlItem = frontier.GetAvailableUrls(1, DateTime.UtcNow).First(); // should return one item
 
-                var jobRep = new JobRepository(Mock.Of<IActivityLogRepository>());
+                var jobRep = new ProcessesRepository(Mock.Of<IActivityLogRepository>());
                 var job = jobRep.Start(urlItem); // adds the 1st log message
                 // wait a little bit to force difference in time between two log messages and sort them later
                 Thread.Sleep(100);
@@ -336,7 +336,7 @@ namespace CrawlerService.Data.Impl
                 // make sure the URL is not in progress
                 using (var ctx = _db.CreateDbContext())
                 {
-                    urlItem = ctx.UrlItems.Single(url => url.Id == urlItem.Id);
+                    urlItem = ctx.DomainNames.Single(url => url.Id == urlItem.Id);
                     Assert.False(urlItem.IsInProgress);
                 }
 
@@ -353,12 +353,12 @@ namespace CrawlerService.Data.Impl
             {
                 #region action
 
-                var frontier = new UrlFrontierRepository();
+                var frontier = new DomainNamesRepository();
                 var nextAvailableTime = new DateTime(2016, 1, 1, 0, 0, 0, DateTimeKind.Utc); // already available
                 frontier.AddOrUpdateUrl(testUrl, nextAvailableTime);
                 var urlItem = frontier.GetAvailableUrls(1, DateTime.UtcNow).First(); // should return one item
 
-                var jobRep = new JobRepository(Mock.Of<IActivityLogRepository>());
+                var jobRep = new ProcessesRepository(Mock.Of<IActivityLogRepository>());
                 var job = jobRep.Start(urlItem); // adds the 1st log message
                 // wait a little bit to force difference in time between two log messages and sort them later
                 Thread.Sleep(100);
@@ -371,7 +371,7 @@ namespace CrawlerService.Data.Impl
                 // make sure the URL is not in progress
                 using (var ctx = _db.CreateDbContext())
                 {
-                    urlItem = ctx.UrlItems.Single(url => url.Id == urlItem.Id);
+                    urlItem = ctx.DomainNames.Single(url => url.Id == urlItem.Id);
                     Assert.False(urlItem.IsInProgress);
                 }
 
