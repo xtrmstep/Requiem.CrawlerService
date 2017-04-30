@@ -11,11 +11,11 @@ using Xunit;
 namespace CrawlerService.Data.Impl
 {
     [Collection("DbIntegratedTests")]
-    public class JobRepositoryTests
+    public class ProcessesRepositoryTests
     {
         private readonly DatabaseFixture _db;
 
-        public JobRepositoryTests(DatabaseFixture db)
+        public ProcessesRepositoryTests(DatabaseFixture db)
         {
             _db = db;
         }

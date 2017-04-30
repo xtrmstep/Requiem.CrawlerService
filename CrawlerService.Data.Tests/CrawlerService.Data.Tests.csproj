@@ -83,8 +83,7 @@
   <ItemGroup>
     <Compile Include="Fixtures\DatabaseFixture.cs" />
     <Compile Include="Fixtures\DbIntegratedTestsCollection.cs" />
-    <Compile Include="Impl\DataRepositoryTests.cs" />
-    <Compile Include="Impl\JobRepositoryTests.cs" />
+    <Compile Include="Impl\ProcessesRepositoryTests.cs" />
     <Compile Include="Impl\DomainNamesRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
