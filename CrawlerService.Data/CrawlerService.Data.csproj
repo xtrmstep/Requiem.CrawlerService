@@ -66,6 +66,11 @@
     <Compile Include="Impl\DomainNamesRepository.cs" />
     <Compile Include="IDomainNamesRepository.cs" />
     <Compile Include="MapperConfiguration.cs" />
+    <Compile Include="Migrations\201704300803466_init.cs" />
+    <Compile Include="Migrations\201704300803466_init.Designer.cs">
+      <DependentUpon>201704300803466_init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ExtractRule.cs" />
     <Compile Include="Models\DataBlock.cs" />
     <Compile Include="Types\DataBlockType.cs" />
@@ -83,6 +88,11 @@
       <Project>{d3caa6c0-e776-4843-bdf8-91c2231ba4d7}</Project>
       <Name>CrawlerService.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201704300803466_init.resx">
+      <DependentUpon>201704300803466_init.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

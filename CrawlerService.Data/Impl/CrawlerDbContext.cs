@@ -46,21 +46,21 @@ namespace CrawlerService.Data.Impl
             {
                 Type = Types.DataBlocks.LINK,
                 RegExpression = "(<a.*?>.*?</a>)",
-                Name = "Link"
+                Description = "Link"
             };
             var picRule = new ExtractRule
             {
                 Type = Types.DataBlocks.PICTURE,
                 RegExpression = "<(img)\b[^>]*>",
-                Name = "Picture"
+                Description = "Picture"
             };
             var videoRule = new ExtractRule
             {
                 Type = Types.DataBlocks.VIDEO,
                 RegExpression = @"(?<=<iframe[^>]*?)(?:\s*width=[""'](?<width>[^""']+)[""']|\s*height=[""'](?<height>[^'""]+)[""']|\s*src=[""'](?<src>[^'""]+[""']))+[^>]*?>",
-                Name = "Video"
+                Description = "Video"
             };
-            ctx.ExtractRules.AddOrUpdate(r => r.Name, linkRule, picRule, videoRule);
+            ctx.ExtractRules.AddOrUpdate(r => r.Description, linkRule, picRule, videoRule);
 
             #endregion
 

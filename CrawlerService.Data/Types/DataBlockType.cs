@@ -3,7 +3,7 @@
     public class DataBlocks
     {
         public const string LINK = "LINK";
-        public const string VIDEO = "Video";
-        public const string PICTURE = "Picture";
+        public const string VIDEO = "VIDEO";
+        public const string PICTURE = "PICTURE";
     }
 }
