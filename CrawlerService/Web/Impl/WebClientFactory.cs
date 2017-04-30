@@ -6,18 +6,16 @@ namespace CrawlerService.Web.Impl
     internal class WebClientFactory : IWebClientFactory
     {
         private readonly ICrawlerWebClient _crawlerWebClient;
-        private readonly ICrawlerSettingsRepository _settings;
 
-        public WebClientFactory(ICrawlerSettingsRepository settings, ICrawlerWebClient crawlerWebClient)
+        public WebClientFactory(ICrawlerWebClient crawlerWebClient)
         {
-            _settings = settings;
             _crawlerWebClient = crawlerWebClient;
         }
 
         public ICrawlerWebClient CreateWebClient()
         {
             // todo this code should be removed because it does not create instance
-            _crawlerWebClient.SetHeader(HttpRequestHeader.UserAgent, _settings.GetUserAgent());
+            _crawlerWebClient.SetHeader(HttpRequestHeader.UserAgent, "");
             return _crawlerWebClient;
         }
     }

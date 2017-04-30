@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CrawlerService.Data.Models
 {
@@ -16,5 +15,6 @@ namespace CrawlerService.Data.Models
         public float? CrawlDelay { get; set; }
 
         public IList<Process> Processes { get; set; } = new List<Process>();
+        public IList<ExtractRule> ExtractRules { get; set; } = new List<ExtractRule>();
     }
 }

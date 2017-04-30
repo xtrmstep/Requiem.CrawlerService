@@ -59,13 +59,10 @@ namespace CrawlerService.Core
 
             // obtain a bunch of URLs and start processing in parallel (as per configuration)
             var startedJobs = new List<Process>();
-            var urlItems = _urlFrontier.GetAvailableUrls(BatchSize, CrawlerDateTime.Now);
-            foreach (var urlItem in urlItems)
-            {
-                var jobItem = _jobs.Start(urlItem);
-                startedJobs.Add(jobItem);
-                downloadUrl.Post(jobItem);
-            }
+            var urlItem = _urlFrontier.GetNextDomain(CrawlerDateTime.Now);
+            var jobItem = _jobs.Start(urlItem);
+            startedJobs.Add(jobItem);
+            downloadUrl.Post(jobItem);
             downloadUrl.Complete();
 
             // wait until the pipeline is completed and mark all jobs finished

@@ -8,14 +8,12 @@ namespace CrawlerService.Types.Dataflow.Impl
 {
     internal class PipelineRoutines : IPipeline
     {
-        private readonly ICrawlerSettingsRepository _crawlerSettingsRepository;
         private readonly IDataBlocksRepository _dataRepository;
         private readonly IWebClientFactory _webClientFactory;
 
-        public PipelineRoutines(IWebClientFactory webClientFactory, ICrawlerSettingsRepository crawlerSettingsRepository, IDataBlocksRepository dataRepository)
+        public PipelineRoutines(IWebClientFactory webClientFactory, IDataBlocksRepository dataRepository)
         {
             _webClientFactory = webClientFactory;
-            _crawlerSettingsRepository = crawlerSettingsRepository;
             _dataRepository = dataRepository;
         }
 
@@ -23,7 +21,7 @@ namespace CrawlerService.Types.Dataflow.Impl
         {
             using (var client = _webClientFactory.CreateWebClient())
             {
-                var url = job.Domain.Url;
+                var url = job.Domain.Name;
                 var content = client.Download(url);
                 return new DownloadedContentData(job, content);
             }
@@ -31,7 +29,7 @@ namespace CrawlerService.Types.Dataflow.Impl
 
         public IEnumerable<ParsingRulesData> GetParsingRules(DownloadedContentData data)
         {
-            var rules = _crawlerSettingsRepository.GetParsingRules(data.Job);
+            var rules = data.Job.Domain.ExtractRules;
             foreach (var rule in rules)
             {
                 yield return new ParsingRulesData(data.Job, rule, data.Content);
@@ -43,13 +41,14 @@ namespace CrawlerService.Types.Dataflow.Impl
             var matches = Regex.Matches(data.Content, data.Rule.RegExpression);
             foreach (Match match in matches)
             {
-                yield return new ParsedContentData(data.Job, data.Rule.DataType, match.Value);
+                yield return new ParsedContentData(data.Job, data.Rule.Type, match.Value);
             }
         }
 
         public Process StoreData(ParsedContentData data)
         {
-            _dataRepository.StoreData(data.Job, data.BlockType, data.Data);
+            // todo change domain with URL
+            _dataRepository.Add(data.Job.Domain.Name, data.BlockType, data.Data);
 
             return data.Job;
         }

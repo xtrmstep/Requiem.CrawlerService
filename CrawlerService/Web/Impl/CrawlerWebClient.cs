@@ -9,26 +9,10 @@ namespace CrawlerService.Web.Impl
     /// </summary>
     internal class CrawlerWebClient : WebClient, ICrawlerWebClient
     {
-        private readonly IActivityLogRepository _logger;
-
-        public CrawlerWebClient(IActivityLogRepository logger)
-        {
-            _logger = logger;
-        }
-
         public string Download(string url)
         {
-            try
-            {
-                var content = DownloadString(url);
-                _logger.UrlDownloaded(url);
-                return content;
-            }
-            catch (Exception err)
-            {
-                _logger.LogError(url, err);
-                throw;
-            }
+            var content = DownloadString(url);
+            return content;
         }
 
         public string GetHeader(HttpRequestHeader headerName)

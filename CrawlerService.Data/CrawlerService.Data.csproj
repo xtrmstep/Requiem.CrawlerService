@@ -58,7 +58,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DependencyConfiguration.cs" />
-    <Compile Include="Helpers\UrlItemBuilder.cs" />
     <Compile Include="IDataBlocksRepository.cs" />
     <Compile Include="IProcessesRepository.cs" />
     <Compile Include="Impl\CrawlerDbContext.cs" />

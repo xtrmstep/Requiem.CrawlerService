@@ -1,6 +1,7 @@
 ﻿using System;
 using CrawlerService.Data;
 using CrawlerService.Data.Models;
+using CrawlerService.Data.Types;
 using CrawlerService.Types.Dataflow;
 using Moq;
 using Xunit;
@@ -30,16 +31,13 @@ namespace CrawlerService.Core
             };
             var parsedContentDatas = new[]
             {
-                new ParsedContentData(jobItem, DataBlockType.Link, string.Empty)
+                new ParsedContentData(jobItem, DataBlocks.LINK, string.Empty)
             };
             var crawlRules = new[]
             {
                 crawlRule
             };
-            var urlItems = new[]
-            {
-                new DomainName()
-            };
+            var urlItem = new DomainName();
 
             #endregion
 
@@ -57,7 +55,7 @@ namespace CrawlerService.Core
 
             // at least one URL should be exist to allow the downloading of content
             var mockFrontier = new Mock<IDomainNamesRepository>();
-            mockFrontier.Setup(m => m.GetAvailableUrls(It.IsAny<int>(), It.IsAny<DateTime>())).Returns(urlItems);
+            mockFrontier.Setup(m => m.GetNextDomain(It.IsAny<DateTime>())).Returns(urlItem);
 
             #endregion
 
@@ -66,14 +64,6 @@ namespace CrawlerService.Core
             // job should be created for the URL
             var mockJob = new Mock<IProcessesRepository>();
             mockJob.Setup(m => m.Start(It.IsAny<DomainName>())).Returns(jobItem);
-
-            #endregion
-
-            #region settings mock
-
-            // at least one rule should be exist to allow the downloading of content
-            var mockSettings = new Mock<ICrawlerSettingsRepository>();
-            mockSettings.Setup(m => m.GetParsingRules(It.IsAny<Process>())).Returns(crawlRules);
 
             #endregion
 

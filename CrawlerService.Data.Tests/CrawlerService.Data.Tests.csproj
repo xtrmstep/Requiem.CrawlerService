@@ -79,9 +79,6 @@
   <ItemGroup>
     <Compile Include="DatabaseFixture.cs" />
     <Compile Include="DbIntegratedTestsCollection.cs" />
-    <Compile Include="Helpers\UrlItemBuilderTests.cs" />
-    <Compile Include="Impl\ActivityLogRepositoryTests.cs" />
-    <Compile Include="Impl\CrawlerSettingsRepositoryTests.cs" />
     <Compile Include="Impl\DataRepositoryTests.cs" />
     <Compile Include="Impl\JobRepositoryTests.cs" />
     <Compile Include="Impl\UrlFrontierRepositoryTests.cs" />
