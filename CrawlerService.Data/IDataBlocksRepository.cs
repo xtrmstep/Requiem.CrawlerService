@@ -1,5 +1,4 @@
 ﻿using System;
-using CrawlerService.Data.Models;
 
 namespace CrawlerService.Data
 {

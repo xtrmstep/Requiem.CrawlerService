@@ -2,6 +2,7 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Threading;
+using CrawlerService.Common.DateTime;
 using CrawlerService.Data.Models;
 using Moq;
 using Xunit;
@@ -75,8 +76,8 @@ namespace CrawlerService.Data.Impl
                     ctx.Processes.Add(new Process
                     {
                         Id = Guid.NewGuid(),
-                        DateStart = DateTime.Now.AddDays(-2),
-                        DateFinish = DateTime.Now.AddDays(-2), // make sure the job is finished
+                        DateStart = CrawlerDateTime.Now.AddDays(-2),
+                        DateFinish = CrawlerDateTime.Now.AddDays(-2), // make sure the job is finished
                         Domain = urlItem
                     });
                     ctx.SaveChanges();
@@ -126,7 +127,7 @@ namespace CrawlerService.Data.Impl
                     ctx.Processes.Add(new Process
                     {
                         Id = Guid.NewGuid(),
-                        DateStart = DateTime.Now.AddDays(-2),
+                        DateStart = CrawlerDateTime.Now.AddDays(-2),
                         DateFinish = null, // make sure the job is NOT finished
                         Domain = urlItem
                     });
@@ -321,7 +322,7 @@ namespace CrawlerService.Data.Impl
                 var frontier = new DomainNamesRepository();
                 var nextAvailableTime = new DateTime(2016, 1, 1, 0, 0, 0, DateTimeKind.Utc); // already available
                 frontier.AddOrUpdateUrl(testUrl, nextAvailableTime);
-                var urlItem = frontier.GetAvailableUrls(1, DateTime.UtcNow).First(); // should return one item
+                var urlItem = frontier.GetAvailableUrls(1, CrawlerDateTime.Now).First(); // should return one item
 
                 var jobRep = new ProcessesRepository(Mock.Of<IActivityLogRepository>());
                 var job = jobRep.Start(urlItem); // adds the 1st log message
@@ -356,7 +357,7 @@ namespace CrawlerService.Data.Impl
                 var frontier = new DomainNamesRepository();
                 var nextAvailableTime = new DateTime(2016, 1, 1, 0, 0, 0, DateTimeKind.Utc); // already available
                 frontier.AddOrUpdateUrl(testUrl, nextAvailableTime);
-                var urlItem = frontier.GetAvailableUrls(1, DateTime.UtcNow).First(); // should return one item
+                var urlItem = frontier.GetAvailableUrls(1, CrawlerDateTime.Now).First(); // should return one item
 
                 var jobRep = new ProcessesRepository(Mock.Of<IActivityLogRepository>());
                 var job = jobRep.Start(urlItem); // adds the 1st log message

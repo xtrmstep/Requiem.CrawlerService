@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Linq;
+using CrawlerService.Common.DateTime;
 using CrawlerService.Data.Models;
 using Moq;
 using Xunit;
@@ -28,7 +29,7 @@ namespace CrawlerService.Data.Impl
                 var frontier = new DomainNamesRepository();
                 var nextAvailableTime = new DateTime(2016, 1, 1, 0, 0, 0, DateTimeKind.Utc); // already available
                 frontier.AddOrUpdateUrl(expectedUrl, nextAvailableTime);
-                var urlItem = frontier.GetAvailableUrls(1, DateTime.UtcNow).First(); // should return one item
+                var urlItem = frontier.GetAvailableUrls(1, CrawlerDateTime.Now).First(); // should return one item
 
                 var jobs = new ProcessesRepository(Mock.Of<IActivityLogRepository>());
                 var jobItem = jobs.Start(urlItem);

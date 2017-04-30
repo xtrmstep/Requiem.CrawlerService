@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks.Dataflow;
+using CrawlerService.Common.DateTime;
 using CrawlerService.Data;
 using CrawlerService.Data.Models;
 using CrawlerService.Types.Dataflow;
@@ -58,7 +59,7 @@ namespace CrawlerService.Core
 
             // obtain a bunch of URLs and start processing in parallel (as per configuration)
             var startedJobs = new List<Process>();
-            var urlItems = _urlFrontier.GetAvailableUrls(BatchSize, DateTime.UtcNow);
+            var urlItems = _urlFrontier.GetAvailableUrls(BatchSize, CrawlerDateTime.Now);
             foreach (var urlItem in urlItems)
             {
                 var jobItem = _jobs.Start(urlItem);

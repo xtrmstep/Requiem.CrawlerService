@@ -101,6 +101,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CrawlerService.Common\CrawlerService.Common.csproj">
+      <Project>{d3caa6c0-e776-4843-bdf8-91c2231ba4d7}</Project>
+      <Name>CrawlerService.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CrawlerService.Data\CrawlerService.Data.csproj">
       <Project>{6a671f64-8018-4883-aaa5-e922d7054ead}</Project>
       <Name>CrawlerService.Data</Name>

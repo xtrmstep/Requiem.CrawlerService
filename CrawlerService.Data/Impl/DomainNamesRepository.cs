@@ -1,52 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using CrawlerService.Data.Helpers;
+using AutoMapper;
 using CrawlerService.Data.Models;
+using CrawlerService.Data.Types;
 
 namespace CrawlerService.Data.Impl
 {
     internal class DomainNamesRepository : IDomainNamesRepository
     {
+        private readonly IMapper _mapper;
+
+        public DomainNamesRepository(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
+
         public DomainName GetNextDomain(DateTime asOfDate)
         {
             using (var ctx = new CrawlerDbContext())
             {
-                var 
-
-                var urls = ctx.DomainNames
-                    // note: diff in microseconds causes overflow in DB, that's why diff in seconds is used
-                    .Where(url => !url.IsInProgress && (url.EvaliableFromDate.HasValue == false || DbFunctions.DiffSeconds(url.EvaliableFromDate, asOfDate) > 0))
-                    .OrderBy(url => url.EvaliableFromDate)
-                    .ThenBy(url => url.Url)
-                    .Take(number)
-                    .ToList();
-                // mark them as taken to be processed
-                foreach (var url in urls)
-                {
-                    url.IsInProgress = true;
-                }
-                ctx.SaveChanges();
-                return urls;
+                var availableDomain = ctx.DomainNames.Include(d => d.Processes)
+                    .Where(d => d.Processes.Any(p => p.Status == Statuses.IN_PROGRESS) == false) // no running processes
+                    .Where(d => !d.EvaliableFromDate.HasValue || DbFunctions.DiffSeconds(d.EvaliableFromDate, asOfDate) < 0) // EvaliableFromDate is earlier than asOfDate
+                    .OrderByDescending(d => d.EvaliableFromDate)
+                    .AsNoTracking()
+                    .FirstOrDefault();
+                return availableDomain;
             }
         }
 
-        public void AddOrUpdateUrl(string url, DateTime nextAvailableTime)
+        public void Update(DomainName domain)
         {
             using (var ctx = new CrawlerDbContext())
             {
-                var urlItem = UrlItemBuilder.Create(url, nextAvailableTime);
-                var existingUrl = ctx.DomainNames.SingleOrDefault(u => u.Host == urlItem.Host && u.Url == url);
-                if (existingUrl != null)
-                {
-                    existingUrl.EvaliableFromDate = nextAvailableTime;
-                    existingUrl.IsInProgress = false; // reset the flag since the url is not processed anymore and available for the next round
-                }
-                else
-                {
-                    ctx.DomainNames.Add(urlItem);
-                }
+                var trackedDomain = ctx.DomainNames.Single(d => d.Name == domain.Name);
+                _mapper.Map(domain, trackedDomain);
                 ctx.SaveChanges();
             }
         }

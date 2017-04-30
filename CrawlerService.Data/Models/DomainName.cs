@@ -11,8 +11,10 @@ namespace CrawlerService.Data.Models
         public string Name { get; set; }
 
         public DateTime? EvaliableFromDate { get; set; }
-        public string RobotsTxtPath { get; set; }
-        public string Disallow { get; set; }
-        public int? CrawlDelay { get; set; }
+        public string[] Allow { get; set; }
+        public string[] Disallow { get; set; }
+        public float? CrawlDelay { get; set; }
+
+        public IList<Process> Processes { get; set; } = new List<Process>();
     }
 }

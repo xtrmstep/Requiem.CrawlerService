@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrawlerService.Data", "Craw
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrawlerService.Data.Tests", "CrawlerService.Data.Tests\CrawlerService.Data.Tests.csproj", "{5EF20221-9B4A-4BD6-A4A3-94970E5A9538}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrawlerService.Common", "CrawlerService.Common\CrawlerService.Common.csproj", "{D3CAA6C0-E776-4843-BDF8-91C2231BA4D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AppVeyor|Any CPU = AppVeyor|Any CPU
@@ -68,6 +70,12 @@ Global
 		{5EF20221-9B4A-4BD6-A4A3-94970E5A9538}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EF20221-9B4A-4BD6-A4A3-94970E5A9538}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EF20221-9B4A-4BD6-A4A3-94970E5A9538}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3CAA6C0-E776-4843-BDF8-91C2231BA4D7}.AppVeyor|Any CPU.ActiveCfg = Release|Any CPU
+		{D3CAA6C0-E776-4843-BDF8-91C2231BA4D7}.AppVeyor|Any CPU.Build.0 = Release|Any CPU
+		{D3CAA6C0-E776-4843-BDF8-91C2231BA4D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3CAA6C0-E776-4843-BDF8-91C2231BA4D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3CAA6C0-E776-4843-BDF8-91C2231BA4D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3CAA6C0-E776-4843-BDF8-91C2231BA4D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
