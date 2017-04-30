@@ -22,8 +22,8 @@ namespace CrawlerService.Data.Impl
             {
                 var availableDomain = ctx.DomainNames.Include(d => d.Processes)
                     .Where(d => d.Processes.Any(p => p.Status == Statuses.IN_PROGRESS) == false) // no running processes
-                    .Where(d => !d.EvaliableFromDate.HasValue || DbFunctions.DiffSeconds(d.EvaliableFromDate, asOfDate) < 0) // EvaliableFromDate is earlier than asOfDate
-                    .OrderByDescending(d => d.EvaliableFromDate)
+                    .Where(d => !d.EvaliableFromDate.HasValue || DbFunctions.DiffSeconds(d.EvaliableFromDate, asOfDate) > 0) // asOfDate is earlier than EvaliableFromDate
+                    .OrderBy(d => d.EvaliableFromDate) // from the earliest to the latest
                     .AsNoTracking()
                     .FirstOrDefault();
                 return availableDomain;

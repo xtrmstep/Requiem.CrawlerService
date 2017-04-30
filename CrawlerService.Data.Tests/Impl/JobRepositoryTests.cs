@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using CrawlerService.Common.DateTime;
+using CrawlerService.Data.Fixtures;
 using CrawlerService.Data.Models;
 using Moq;
 using Xunit;

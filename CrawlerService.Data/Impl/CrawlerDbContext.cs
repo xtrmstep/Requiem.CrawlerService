@@ -5,7 +5,7 @@ using CrawlerService.Data.Models;
 
 namespace CrawlerService.Data.Impl
 {
-    internal class CrawlerDbContext : DbContext
+    public class CrawlerDbContext : DbContext
     {
         private readonly IDbTransaction _dbTransaction;
 
@@ -61,16 +61,6 @@ namespace CrawlerService.Data.Impl
                 Description = "Video"
             };
             ctx.ExtractRules.AddOrUpdate(r => r.Description, linkRule, picRule, videoRule);
-
-            #endregion
-
-            #region urls
-
-            var defaultUrl = new DomainName
-            {
-                Name = "http://binary-notes.ru"
-            };
-            ctx.DomainNames.AddOrUpdate(s => s.Name, defaultUrl);
 
             #endregion
         }
