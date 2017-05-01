@@ -2,6 +2,7 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Threading;
+using AutoMapper;
 using CrawlerService.Common.DateTime;
 using CrawlerService.Data.Fixtures;
 using CrawlerService.Data.Models;
@@ -20,10 +21,27 @@ namespace CrawlerService.Data.Impl
             _db = db;
         }
 
-        [Fact(DisplayName = "JobRepository should create new job for new url")]
-        public void Should_create_new_job_for_new_url()
+        [Fact(DisplayName = "Start should create new process domain without running process")]
+        public void Start_should_create_new_process_domain_without_running_process()
         {
-            throw new NotImplementedException();
+            using (var ctx = _db.CreateContext())
+            {
+                // arrange
+                var domain = new DomainName
+                {
+                    Name = "www.test.com"
+                };
+                ctx.DomainNames.Add(domain);
+                ctx.SaveChanges();
+
+                // act
+                var actual = new ProcessesRepository(Mock.Of<IMapper>()).Start(domain);
+
+                // assert
+                Assert.NotNull(actual);
+                Assert.Equal(domain.Name, actual.Domain.Name);
+                Assert.Equal(Types.Statuses.IN_PROGRESS, actual.Status);
+            }
         }
 
         [Fact(DisplayName = "JobRepository should create new job for old url")]

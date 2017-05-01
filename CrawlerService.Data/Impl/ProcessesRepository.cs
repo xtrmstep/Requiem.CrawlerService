@@ -22,6 +22,9 @@ namespace CrawlerService.Data.Impl
         {
             using (var ctx = new CrawlerDbContext(IsolationLevel.Serializable))
             {
+                // the domain should be tracked to prevent duplication insertion
+                var trackedDomain = ctx.DomainNames.Single(d => d.Name == domain.Name);
+
                 var isAlreadyInProgress = ctx.Processes.Include(p => p.Domain)
                     .Any(p => p.Status == Statuses.IN_PROGRESS && p.Domain.Name == domain.Name);
 
@@ -30,7 +33,7 @@ namespace CrawlerService.Data.Impl
 
                 var newProcess = new Process
                 {
-                    Domain = domain,
+                    Domain = trackedDomain,
                     Status = Statuses.IN_PROGRESS
                 };
                 ctx.Processes.Add(newProcess);

@@ -1,11 +1,12 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using CrawlerService.Data.Models;
 
 namespace CrawlerService.Data.Impl
 {
-    public class CrawlerDbContext : DbContext
+    public class CrawlerDbContext : DbContext, IDisposable
     {
         private readonly IDbTransaction _dbTransaction;
 
@@ -19,6 +20,7 @@ namespace CrawlerService.Data.Impl
         /// <param name="isolationLevel"></param>
         public CrawlerDbContext(IsolationLevel isolationLevel) : this()
         {
+            Database.Connection.Open();
             _dbTransaction = Database.Connection.BeginTransaction(isolationLevel);
         }
 
@@ -63,6 +65,16 @@ namespace CrawlerService.Data.Impl
             ctx.ExtractRules.AddOrUpdate(r => r.Description, linkRule, picRule, videoRule);
 
             #endregion
+        }
+
+        new public void Dispose()
+        {
+            if (_dbTransaction != null)
+            {
+                Database.Connection.Close();
+                _dbTransaction.Dispose();
+            }
+            base.Dispose();
         }
     }
 }
