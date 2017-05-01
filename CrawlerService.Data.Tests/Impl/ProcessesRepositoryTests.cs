@@ -2,6 +2,7 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using AutoMapper;
 using CrawlerService.Common.DateTime;
 using CrawlerService.Data.Fixtures;
@@ -44,58 +45,76 @@ namespace CrawlerService.Data.Impl
             }
         }
 
-        [Fact(DisplayName = "JobRepository should create new job for old url")]
-        public void Should_create_new_job_for_url_which_has_inactive_job()
+        [Fact(DisplayName = "Start should fail to create new process for domain if there is other running one")]
+        public void Start_should_fail_to_create_new_process_for_domain_if_there_is_other_running_one()
         {
-            throw new NotImplementedException();
+            using (var ctx = _db.CreateContext())
+            {
+                // arrange
+                var domain = new DomainName
+                {
+                    Name = "www.test.com"
+                };
+                ctx.DomainNames.Add(domain);
+                ctx.SaveChanges();
+
+                var process = new Process
+                {
+                    Domain = domain,
+                    Status = Types.Statuses.IN_PROGRESS,
+                    DateStart = new DateTime(2016, 1, 30, 21, 0, 0, DateTimeKind.Utc) // some date in the past
+                };
+                ctx.Processes.Add(process);
+                ctx.SaveChanges();
+
+                // act & assert
+                var exception = Assert.Throws<Exception>(() => new ProcessesRepository(Mock.Of<IMapper>()).Start(domain));
+                Assert.Equal("Already in progress", exception.Message);
+            }
         }
 
-        [Fact(DisplayName = "JobRepository should not create new job if already exists one")]
-        public void Should_return_null_if_job_is_already_running_for_url()
+        [Fact(DisplayName = "Start should create only one process in concurrent environment")]
+        public void Start_should_create_only_one_process_in_concurrent_environment()
         {
-            throw new NotImplementedException();
-        }
+            using (var ctx = _db.CreateContext())
+            {
+                // arrange
+                var domain = new DomainName
+                {
+                    Name = "www.test.com"
+                };
+                ctx.DomainNames.Add(domain);
+                ctx.SaveChanges();
+                Process process1 = null;
+                Process process2 = null;
+                var mre = new ManualResetEvent(false);
 
-        [Fact(DisplayName = "JobRepository should add log message when job is started")]
-        public void Should_add_log_message_when_job_is_started()
-        {
-            throw new NotImplementedException();
-        }
+                var t1 = Task.Run(() =>
+                {
+                    mre.WaitOne();
 
-        [Fact(DisplayName = "JobRepository should add log message when job is completed")]
-        public void Should_add_item_to_history_when_job_is_completed()
-        {
-            throw new NotImplementedException();
-        }
+                    using (var internalCtx = _db.CreateContext())
+                    {
+                        var existingDomain = internalCtx.DomainNames.Single(d => d.Name == "www.test.com");
+                        process1 = new ProcessesRepository(Mock.Of<IMapper>()).Start(existingDomain);
+                    }
+                });
+                var t2 = Task.Run(() =>
+                {
+                    mre.WaitOne();
 
-        [Fact(DisplayName = "JobRepository should mark job finished when it is completed")]
-        public void Should_mark_job_finished_when_it_is_completed()
-        {
-            throw new NotImplementedException();
-        }
+                    using (var internalCtx = _db.CreateContext())
+                    {
+                        var existingDomain = internalCtx.DomainNames.Single(d => d.Name == "www.test.com");
+                        process2 = new ProcessesRepository(Mock.Of<IMapper>()).Start(existingDomain);
+                    }
+                });
+                mre.Set();
+                Task.WaitAll(t1, t2);
 
-        [Fact(DisplayName = "JobRepository should add log message when job is stopped")]
-        public void Should_add_item_to_history_when_job_is_stopped()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Fact(DisplayName = "JobRepository should mark job finished when it is stopped")]
-        public void Should_mark_job_finished_when_it_is_stopped()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Fact(DisplayName = "JobRepository should release URL when job is completed")]
-        public void Should_release_URL_when_job_is_completed()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Fact(DisplayName = "JobRepository should release URL when job  is stopped")]
-        public void Should_release_URL_when_job_is_stopped()
-        {
-            throw new NotImplementedException();
+                Assert.NotNull(process1);
+                Assert.Null(process2);
+            }
         }
     }
 }
